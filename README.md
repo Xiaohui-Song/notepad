@@ -1,8 +1,8 @@
 # notepad
 mid experiment  
 
-##1.基本要求  
-###实现时间戳功能  
+## 1.基本要求  
+### 实现时间戳功能  
 在定义notes表时，已经定义了COLUMN_NAME_MODIFICATION_DATE（更改时间）  
 ```
 public static final String COLUMN_NAME_MODIFICATION_DATE = "modified";
@@ -48,7 +48,7 @@ public static final String COLUMN_NAME_MODIFICATION_DATE = "modified";
             NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE,
     };
 ```  
-(3)在视图中显示的游标列中加入时间：
+(3)在视图中显示的游标列中加入更新时间：
 ```
 String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE} ;
 ```  
@@ -70,7 +70,7 @@ SimpleCursorAdapter adapter
         // Sets the ListView's adapter to be the cursor adapter that was just created.
         setListAdapter(adapter);
 ```  
-(6)但最终显示的时间为一串int型日期，所以要将int转为Date型，可以在存入数据时转换，也可以在取出数据时转换，我选在存入数据是转换  
+(6)但最终显示的时间为一串int型日期，所以要将数据转型，可以在存入数据时转换，也可以在取出数据时转换，我选在存入数据时转换  
 (7)在NoteEditor中找到更新时间的函数updateNote（），将存入的当前时间转为Date类型  
  ```
         ContentValues values = new ContentValues();
@@ -83,4 +83,86 @@ SimpleCursorAdapter adapter
 (8)查看最终显示效果：  
 ![1](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/notes.png)  
 <br>  
-###查询功能
+### 查询功能  
+(1)在layout下创建note_search.xml，添加一个搜索图标  
+```
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <SearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="搜索">
+    </SearchView>
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    </ListView>
+</LinearLayout>
+```  
+(2)在NoteEditor中找到onCreatOptionMenu()函数，将新写的xml布局，映射到menu中  
+```
+MenuInflater inflater = getMenuInflater();
+inflater.inflate(R.menu.editor_options_menu, menu);
+```  
+(3)在NoteList找到onOptionsItemSelected()函数，添加选择搜索事件的处理  
+```
+case R.id.menu_search:
+                Intent intent = new Intent();
+                intent.setClass(this, NoteSearch.class);
+                this.startActivity(intent);
+                return true;
+```  
+(4)添加一个搜索的Activity事件，Activity中获取到note_search中的ListView和SearchView  
+```
+listview=findViewById(R.id.list_view);
+SearchView search=findViewById(R.id.search_view);
+```  
+(5)为SearchView添加监听，使得搜索内容改变后，重新执行一次查询，并通过SimpleCursorAdapter映射查询到的内容
+```
+ sqLiteDatabase=new NotePadProvider.DatabaseHelper(this).getReadableDatabase();
+ @Override
+    public boolean onQueryTextChange(String newText) {
+        Cursor cursor=sqLiteDatabase.query(
+                NotePad.Notes.TABLE_NAME,
+                PROJECTION,
+                NotePad.Notes.COLUMN_NAME_TITLE+" like ? or "+NotePad.Notes.COLUMN_NAME_NOTE+" like ?",
+                new String[]{"%"+newText+"%","%"+newText+"%"},//根据标题或内容模糊查询
+                null,
+                null,
+                NotePad.Notes.DEFAULT_SORT_ORDER);
+        int[] viewIDs = { android.R.id.text1,android.R.id.text2};
+        SimpleCursorAdapter adapter
+                = new SimpleCursorAdapter(
+                NoteSearch.this,
+                R.layout.noteslist_item,
+                cursor,
+                new String[]{NotePad.Notes.COLUMN_NAME_TITLE,NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE},
+                viewIDs
+        );
+        listview.setAdapter(adapter);
+        return true;
+    }
+```  
+(6)为ListView添加监听，点击可以查看到note的详细内容
+```
+   listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Uri uri = ContentUris.withAppendedId(getIntent().getData(), l);
+                String action = getIntent().getAction();
+                if (Intent.ACTION_PICK.equals(action) || Intent.ACTION_GET_CONTENT.equals(action)) {
+                    setResult(RESULT_OK, new Intent().setData(uri));
+                } else {
+                    startActivity(new Intent(Intent.ACTION_EDIT, uri));
+                }
+            }
+        });
+```  
+(7)查看效果  
+![2](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search.png)  
