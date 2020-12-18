@@ -165,8 +165,8 @@ SearchView search=findViewById(R.id.search_view);
             }
         });
 ```  
-(7)查看效果 （按内容/标题查询）
-![2](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search_before.png)
+(7)查看效果 （按内容/标题查询）  
+![2](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search_before.png)  
 ![3](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search2_before.png)  
 <br>  
 ## 附加功能  
@@ -244,9 +244,9 @@ android:background="@drawable/background"
                 Toast.makeText(this,"20号字体",Toast.LENGTH_SHORT).show();
                 break;
 ```  
-(4)查看效果
-![6](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/edit_menu.png)
-![7](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changebg.png)
-![8](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/color1.png)
-![9](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changesize.png)
-![10](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/size20.png)
+(4)查看效果  
+![6](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/edit_menu.png)  
+![7](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changebg.png)  
+![8](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/color1.png)  
+![9](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changesize.png)  
+![10](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/size20.png)  
