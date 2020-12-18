@@ -81,7 +81,7 @@ SimpleCursorAdapter adapter
         values.put(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, formatter.format(date));
  ```
 (8)查看最终显示效果：  
-![1](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/notes.png)  
+![1](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/notes_before.png)  
 <br>  
 ### 查询功能  
 (1)在layout下创建note_search.xml，添加一个搜索图标  
@@ -123,7 +123,8 @@ case R.id.menu_search:
 listview=findViewById(R.id.list_view);
 SearchView search=findViewById(R.id.search_view);
 ```  
-(5)为SearchView添加监听，使得搜索内容改变后，重新执行一次查询，并通过SimpleCursorAdapter映射查询到的内容
+(5)为SearchView添加监听，使得搜索内容改变后，重新执行一次查询，在query的selection参数采用模糊查询，可以通过COLUMN_NAME_NOTE或者COLUMN_NAME_TITLE查询内容
+最后通过SimpleCursorAdapter映射查询到的内容
 ```
  sqLiteDatabase=new NotePadProvider.DatabaseHelper(this).getReadableDatabase();
  @Override
@@ -149,7 +150,7 @@ SearchView search=findViewById(R.id.search_view);
         return true;
     }
 ```  
-(6)为ListView添加监听，点击可以查看到note的详细内容
+(6)通过setOnItemClickListener为ListView添加监听，点击可以进入编辑页面，查看到notes的详细内容
 ```
    listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -164,5 +165,88 @@ SearchView search=findViewById(R.id.search_view);
             }
         });
 ```  
-(7)查看效果  
-![2](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search.png)  
+(7)查看效果 （按内容/标题查询）
+![2](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search_before.png)
+![3](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search2_before.png)  
+<br>  
+## 附加功能  
+### 3.UI美化  
+(1)为其添加便签图标，但在观察drawable下的app_notes已经有了便签图标，所以直接将其显示即可  
+(2)在noteslist_item.xml中再添加一个线性布局，形成嵌套，外部线性布局添加便签的图片显示,并使其相对于父容器居中显示  
+```
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:paddingLeft="6dip"
+    android:paddingRight="6dip"
+    android:paddingBottom="3dip"
+    >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/app_notes"
+     />
+    <LinearLayout>
+    ······
+    </LinearLayout>
+</LinearLayout>
+```  
+(3)为notes添加背景，向drawable下放置background.png图片，在noteslist_item.xml的外层线性布局添加图片
+```
+android:background="@drawable/background"
+```  
+(4)查看效果  
+![4](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/notes.png)  
+![5](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search.png)  
+### 4.更改记事本背景  
+(1)观察到记事本已经有menu选项：Edit title，所以他已经有onCreateOptionsMenu()函数，只需要在该函数内添加改变背景菜单的选项，并在onOptionsItemSelected()函数的case中添加对应的点击相应即可  
+(2)找到NoteEditor下的onCreateOptionsMenu()函数，向其中添加“backgroun color”“size”标题，并向期中加入子标题  
+```
+        SubMenu colorMenu = menu.addSubMenu("background color");
+        colorMenu.setHeaderTitle("select color");
+        colorMenu.add(0,COLOR_1,0,"杏色");//#fab27b
+        colorMenu.add(0,COLOR_2,0,"浅绿");//#84bf96
+        colorMenu.add(0,COLOR_3,0,"藤色");//#afb4db
+
+        SubMenu fontMenu = menu.addSubMenu("size");
+        fontMenu.setHeaderTitle("select font");
+        fontMenu.add(0,FONT_12,0,"12号字体");
+        fontMenu.add(0,FONT_16,0,"16号字体");
+        fontMenu.add(0,FONT_20,0,"20号字体");
+```
+(3)在下面的onOptionsItemSelected()函数中，对相应的点击事件添加case，做出响应（改变颜色、字体后，弹出提示信息）
+```
+            case COLOR_1:
+                mText.setBackgroundColor(Color.parseColor("#fab27b"));
+                Toast.makeText(this,"颜色变为杏色",Toast.LENGTH_SHORT).show();
+            break;
+            case COLOR_2:
+                mText.setBackgroundColor(Color.parseColor("#84bf96"));
+                Toast.makeText(this,"颜色变为浅绿",Toast.LENGTH_SHORT).show();
+                break;
+            case COLOR_3:
+                mText.setBackgroundColor(Color.parseColor("#afb4db"));
+                Toast.makeText(this,"颜色变为藤色",Toast.LENGTH_SHORT).show();
+                break;
+            case FONT_12:
+                mText.setTextSize(12*2);
+                Toast.makeText(this,"12号字体",Toast.LENGTH_SHORT).show();
+                break;
+            case FONT_16:
+                mText.setTextSize(16*2);
+                Toast.makeText(this,"16号字体",Toast.LENGTH_SHORT).show();
+                break;
+            case FONT_20:
+                mText.setTextSize(20*2);
+                Toast.makeText(this,"20号字体",Toast.LENGTH_SHORT).show();
+                break;
+```  
+(4)查看效果
+![6](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/edit_menu.png)
+![7](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changebg.png)
+![8](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/color1.png)
+![9](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changesize.png)
+![10](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/size20.png)
