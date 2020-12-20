@@ -244,7 +244,7 @@ android:background="@drawable/background"
                 Toast.makeText(this,"20号字体",Toast.LENGTH_SHORT).show();
                 break;
 ```  
-(4)查看效果（详细效果在picturs文件里）  
+(4)查看效果（详细效果在pictures文件里）  
 ![6](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/edit_menu.png)  
 ![7](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changebg.png)  
 ![8](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/color1.png)  
