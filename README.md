@@ -56,7 +56,7 @@ String[] dataColumns = { NotePad.Notes.COLUMN_NAME_TITLE ,NotePad.Notes.COLUMN_N
 ```
 int[] viewIDs = { android.R.id.text1,android.R.id.text2};
 ```  
-(5)通过SimpleCursorAdapter adapter将游标中的数据映射到布局文件中的TextView中  
+(5)通过SimpleCursorAdapter将数据映射到布局文件中的TextView中  
 ```
 SimpleCursorAdapter adapter
             = new SimpleCursorAdapter(
@@ -105,12 +105,12 @@ SimpleCursorAdapter adapter
     </ListView>
 </LinearLayout>
 ```  
-(2)在NoteEditor中找到onCreatOptionMenu()函数，将新写的xml布局，映射到menu中  
+(2)在NoteEditor中的onCreatOptionMenu()函数，将新写的xml布局，映射到notes的menu中  
 ```
 MenuInflater inflater = getMenuInflater();
 inflater.inflate(R.menu.editor_options_menu, menu);
 ```  
-(3)在NoteList找到onOptionsItemSelected()函数，添加选择搜索事件的处理  
+(3)在NoteList的onOptionsItemSelected()函数，添加选择搜索事件的处理（跳转到新写的Activity中处理搜索事件）  
 ```
 case R.id.menu_search:
                 Intent intent = new Intent();
@@ -169,8 +169,8 @@ SearchView search=findViewById(R.id.search_view);
 ![2](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search_before.png)  
 ![3](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search2_before.png)  
 <br>  
-## 附加功能  
-### 3.UI美化  
+## 2.附加功能  
+### UI美化  
 (1)为其添加便签图标，但在观察drawable下的app_notes已经有了便签图标，所以直接将其显示即可  
 (2)在noteslist_item.xml中再添加一个线性布局，形成嵌套，外部线性布局添加便签的图片显示,并使其相对于父容器居中显示  
 ```
@@ -201,7 +201,7 @@ android:background="@drawable/background"
 (4)查看效果  
 ![4](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/notes.png)  
 ![5](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/search.png)  
-### 4.更改记事本背景  
+### 更改记事本背景  
 (1)观察到记事本已经有menu选项：Edit title，所以他已经有onCreateOptionsMenu()函数，只需要在该函数内添加改变背景菜单的选项，并在onOptionsItemSelected()函数的case中添加对应的点击相应即可  
 (2)找到NoteEditor下的onCreateOptionsMenu()函数，向其中添加“backgroun color”“size”标题，并向期中加入子标题  
 ```
@@ -244,7 +244,7 @@ android:background="@drawable/background"
                 Toast.makeText(this,"20号字体",Toast.LENGTH_SHORT).show();
                 break;
 ```  
-(4)查看效果  
+(4)查看效果（详细效果在picturs文件里）  
 ![6](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/edit_menu.png)  
 ![7](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/changebg.png)  
 ![8](https://github.com/Xiaohui-Song/notepad/blob/main/pictures/color1.png)  
